@@ -82,21 +82,11 @@ export default class Match {
 
     // for node or rel
     if (item.type === this.matchTypes.node || item.type === this.matchTypes.rel) {
-      // variable: string || undefined, label: string || undefined, args: object || undefined
-      if (item.variable && typeof item.variable !== 'string')
-        throw('Item variable must be string or undefined');
-      if (item.label && typeof item.label !== 'string')
-        throw('Item label must be string or undefined')
-      if (item.args && !isObject(item.args))
-        throw('Item args must be obect or undefined');
-      // if label isn't in schema
-      if (item.label && !this.schema.hasOwnProperty(item.label))
-        throw(`Item label not in schema: ${item.label}`)
+      this.validate(item).nodeOrRel();
     }
     // for link
     if (item.type === this.matchTypes.link) {
-      // direction: string || undefined
-      if (item.direction && !this.linkDirection.hasOwnProperty(item.direction)) throw('Item direction must be this.linkDirection left or right')
+      this.validate(item).link();
     }
   }
 
@@ -146,41 +136,4 @@ export default class Match {
     }
   }
 
-  nodeHandler({ variable, label, args }) {
-    let add = '';
-    add = '(';
-    add = add + (variable || '');
-    add = add + (label && `:${label}` || '');
-    add = add + (args && ` (${JSON.stringify(args)})` || '');
-    add = add + ')';
-    return add;
-  }
-
-  relHandler({ variable, label, args }) {
-    let add = '';
-    add = '[';
-    add = add + (variable || '');
-    add = add + (label && `:${label}` || '');
-    add = add + (args && `(${JSON.stringify(args)})` || '');
-    add = add + (']');
-    return add;
-  }
-
-  linkHandler({ direction }) {
-    let add = '';
-    if (direction) {
-      if (direction === this.linkDirection.left) {
-        add = add + '<-';
-        return add;
-      } else if (direction === this.linkDirection.right) {
-        add = add + '->';
-        return add;
-      } else {
-        throw('Wrong link type, must be left or right');
-      }
-    } else {
-      add = add + '-';
-      return add;
-    }
-  }
 }

@@ -13,56 +13,12 @@ class Base {
     }, {})
 
     this.query = '';
-
-    this.linkDirection = {
-      left: 'left',
-      right: 'right'
-    }
-
-    this.matchTypes = {
-      rel: 'rel',
-      node: 'node',
-      link: 'link'
-    }
-  }
-
-  // resets query and return final value
-  return() {
-    const ret = this.query;
-    this.query = '';
-    return ret;
   }
 
   // enforces query is reset
   run() {
     this.query = '';
     return this;
-  }
-
-  // create Object methods
-
-  node(nodeParams) {
-    // TODO: validate params here
-    return {
-      type: this.matchTypes.node,
-      ...nodeParams
-    }
-  }
-
-  rel(relParams) {
-    // TODO: validate params here
-    return {
-      type: this.matchTypes.rel,
-      ...relParams
-    }
-  }
-
-  link(linkParams) {
-    // TODO: validate params here
-    return {
-      type: this.matchTypes.link,
-      ...linkParams
-    }
   }
 }
 
