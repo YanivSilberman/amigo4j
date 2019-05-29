@@ -2,6 +2,7 @@ import { isObject } from '../lib/index';
 
 import Match from './match';
 import Return from './return';
+import With from './with';
 
 /*
 
@@ -120,10 +121,15 @@ class Core {
       ...linkParams
     }
   }
+
+  count(countParams) {
+    return ` count(${countParams && countParams || ''}) `;
+  }
 }
 
 export default [
   Core,
   Match,
-  Return
+  Return,
+  With
 ];

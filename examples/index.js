@@ -18,6 +18,7 @@ const t = amigo4j
       args: { id: "345" }
     })
   ])
+  .with([ { variable: 'count("*")', as: "Count" } ])
   .return("o")
 
 console.log(t);
