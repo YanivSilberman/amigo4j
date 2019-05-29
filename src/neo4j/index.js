@@ -3,6 +3,7 @@ import { isObject } from '../lib/index';
 import Match from './match';
 import Return from './return';
 import With from './with';
+import Unwind from './unwind';
 
 /*
 
@@ -131,5 +132,6 @@ export default [
   Core,
   Match,
   Return,
-  With
+  With,
+  Unwind
 ];

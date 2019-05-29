@@ -1,4 +1,4 @@
-// CREATE - allows query parts to be chained together
+// WITH - allows query parts to be chained together
 // params : "u", { variable: "u", as: "user" }, or [""], [{}]
 
 /*
@@ -48,9 +48,9 @@ export default class With {
     // if item variable isn't right
     if (!item.variable || typeof item.variable !== "string")
       throw(`Item variable is non existent or improper: ${item.variable}`);
-    // if item.key exists but is wrong
-    if (item.with && typeof item.with !== "string")
-      throw(`Item with is non existent or improper: ${item.with}`);
+    // if item.as exists but is wrong
+    if (item.as && typeof item.as !== "string")
+      throw(`Item as is non existent or improper: ${item.as}`);
   }
 
   /**
@@ -60,7 +60,6 @@ export default class With {
   */
 
   withObjectHandler(i) {
-    console.log('withObjectHandler', i);
     this.withValidate(i);
 
     let ret = i.variable;

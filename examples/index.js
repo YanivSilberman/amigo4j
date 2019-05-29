@@ -19,6 +19,7 @@ const t = amigo4j
     })
   ])
   .with([ { variable: 'count("*")', as: "Count" } ])
+  .unwind([], "List")
   .return("o")
 
 console.log(t);
