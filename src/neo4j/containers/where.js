@@ -1,4 +1,4 @@
-import { not, exists } from './components/conditions';
+
 
 // WHERE - adds constraints to the patterns in a MATCH or
   // OPTIONAL MATCH clause or filters the results of a WITH clause.
@@ -16,6 +16,8 @@ Amigo4j :
     .or(amigo4.startsWith("u", "name")("y"))
 
 */
+
+import { not, exists } from '../components/conditions';
 
 
 export default class Where {

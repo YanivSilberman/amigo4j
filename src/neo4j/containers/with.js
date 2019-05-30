@@ -12,7 +12,7 @@ Amigo4j :
 */
 
 
-import { isObject } from '../lib';
+import { isObject } from '../../lib';
 
 export default class With {
   constructor() {}

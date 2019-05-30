@@ -1,54 +1,23 @@
-import { isObject } from '../lib';
-// MATCH - selects node or relationship or multiple
-// params : node / rel / link or array of them
-// options : [[]], [{}], {}
+// CREATE - creates a new element or elements
+// params : node or node-rel-node, or array of them
+// options : [{}], {}
 
 /*
 Direct example
 
 Cypher :
-  MATCH (t:Team {id: "123"})<-[:IN_TEAM]-(u:User), (g:Group {name: "group123"})
+  RETURN "user", "team"
 
 Amigo4j :
-  .match([
-    [
-      {
-        type: amigo4j.matchTypes.node,
-        variable: 't',
-        label: amigo4j.labels.Team,
-        args: { id: "123" }
-      },
-      {
-        type: amigo4j.matchTypes.link,
-        direction: amigo4j.linkDirection.left
-      },
-      {
-        type: amigo4j.matchTypes.rel,
-        label: amigo4j.labels.Team,
-        args: { id: "123" }
-      },
-      {
-        type: amigo4j.matchTypes.link
-      },
-      {
-        type: amigo4j.matchTypes.node,
-        variable: 'u',
-        label: amigo4j.labels.User
-      }
-    ],
-    {
-      type: amigo4j.matchTypes.node,
-      variable: 'g',
-      label: amigo4j.labels.Group,
-      args: { name: "group123" }
-    }
-  ])
-
+  .return([ "user", "team" ])
 */
 
-export default class Match {
-  constructor() {
-  }
+
+import { isObject } from '../../lib';
+
+
+export default class Create {
+  constructor() {}
 
   match(params) {
     this.query = this.query + 'MATCH ';
@@ -61,13 +30,10 @@ export default class Match {
       // single match item
       this.query = this.query + this.matchAdder(params);
       return this;
-    } else if (!params) {
-      return this;
     } else {
       throw `match() method must take object or array, not ${typeof params}`
     }
   }
-
 
   /**
   * Takes item checks if params fit type and will work, throws if fail
@@ -91,6 +57,7 @@ export default class Match {
       this.validate(item).link();
     }
   }
+
 
   /**
   * Takes item or chain, validates and converts to cypher
@@ -137,5 +104,7 @@ export default class Match {
       throw('Wrong match type, use matchTypes.rel or matchTypes.node')
     }
   }
+
+
 
 }

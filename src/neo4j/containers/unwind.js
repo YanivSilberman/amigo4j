@@ -1,7 +1,7 @@
 // UNWIND - expands a list into a sequence of rows
 
 
-import { isObject, toString } from '../lib';
+import { isObject, toString } from '../../lib';
 
 export default class Unwind {
   constructor() {}

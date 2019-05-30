@@ -1,12 +1,10 @@
+import importModules from 'import-modules';
 import * as conditions from './components/conditions';
 import { isObject, linkDirection, matchTypes } from '../lib';
 
-import Match from './match';
-import Return from './return';
-import With from './with';
-import Unwind from './unwind';
-import As from './as';
-import Where from './where';
+const Containers = Object
+  .keys(importModules(`./containers`))
+  .map((i) => importModules(`./containers`)[i].default);
 
 /*
 
@@ -165,10 +163,5 @@ for (let key of Object.keys(conditions)) {
 
 export default [
   Core,
-  Match,
-  Return,
-  With,
-  Unwind,
-  As,
-  Where
+  ...Containers
 ];
