@@ -1,17 +1,5 @@
 // UNWIND - expands a list into a sequence of rows
-// params : (param, as)
 
-/*
-Direct example
-
-Cypher :
-  UNWIND l as List
-  UNWIND [1, 2, 3] as List
-
-Amigo4j :
-  .unwind("l", "List")
-  .unwind([1, 2, 3], "List")
-*/
 
 import { isObject, toString } from '../lib';
 
@@ -20,18 +8,23 @@ export default class Unwind {
 
   unwind(param, as){
     this.unwindValidate(param, as);
+    this.add('UNWIND');
 
-    this.query =
-      this.query  + ' UNWIND ' + toString(param) + ' AS ' + as;
+    if (param) {
+      this.add(toString(param))
+      if (as) {
+        this.add(`AS ${as}`);
+      }
+    }
 
     return this;
   }
 
   unwindValidate(param, as) {
     // if param non existent,
-    if (param === undefined) throw(`Unwind param is undefined: ${param}`);
+    if (param === undefined) return;
     // if param non existent,
-    if (!as) throw(`Unwind as is undefined: ${as}`);
+    if (as === undefined) return;
     // if as isn't right
     if (as && typeof as !== "string")
       throw(`Unwind as is improper, must be string: ${as}`);

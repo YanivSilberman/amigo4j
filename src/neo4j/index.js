@@ -1,9 +1,12 @@
-import { isObject } from '../lib/index';
+import * as conditions from './components/conditions';
+import { isObject, linkDirection, matchTypes } from '../lib';
 
 import Match from './match';
 import Return from './return';
 import With from './with';
 import Unwind from './unwind';
+import As from './as';
+import Where from './where';
 
 /*
 
@@ -15,16 +18,16 @@ and converting the params to string
 
 class Core {
   constructor() {
-    this.linkDirection = {
-      left: 'left',
-      right: 'right'
-    }
+    this.linkDirection = linkDirection;
+    this.matchTypes = matchTypes;
+  }
 
-    this.matchTypes = {
-      rel: 'rel',
-      node: 'node',
-      link: 'link'
-    }
+  // general concat function
+  add(str) {
+    if (!str || typeof str !== "string")
+      throw(`add params must be string... ${str} : ${typeof str}`);
+
+    this.query = this.query + ' ' + str;
   }
 
   // validator function for nodes, rels, and links
@@ -40,17 +43,24 @@ class Core {
         throw('Item label must be string or undefined')
       if (params && params.args && !isObject(params.args))
         throw('Item args must be obect or undefined');
-      // if label isn't in schema
-      if (params && params.label && !this.schema.hasOwnProperty(params.label))
-        throw(`Item label not in schema: ${params.label}`)
     }
 
-    const node = nodeOrRel;
-    const rel = nodeOrRel;
+    const node = () => {
+      nodeOrRel();
+      if (params && params.label && !this.schema.hasOwnProperty(params.label))
+        throw(`Node label not in schema: ${params.label}`);
+    };
+
+    const rel = () => {
+      nodeOrRel();
+      if (params && params.label && !this.rels.hasOwnProperty(params.label))
+        throw(`Rel label not in rels: ${params.label}, ${this.rels}`);
+    };
+
     const link = () => {
       // direction: string || undefined
       if (params && params.direction && !this.linkDirection.hasOwnProperty(params.direction))
-        throw('Item direction must be this.linkDirection left or right')
+        throw('Link direction must be this.linkDirection left or right')
     }
 
     return { node, rel, link, nodeOrRel };
@@ -66,13 +76,15 @@ class Core {
     return add;
   }
 
-  relHandler({ variable, label, args }) {
+  relHandler({ variable, label, args, right, left }) {
     let add = '';
-    add = '[';
+    add = left ? add + '<-' : (right ? add + '-' : add);
+    add = add + '[';
     add = add + (variable || '');
     add = add + (label && `:${label}` || '');
     add = add + (args && `(${JSON.stringify(args)})` || '');
     add = add + (']');
+    add = right ? add + '->' : (left ? add + '-' : add);
     return add;
   }
 
@@ -96,35 +108,58 @@ class Core {
 
   // create Object methods
 
+  nodeById(id, identifier, variable=undefined){
+    if (!id || typeof id !== "string")
+      throw(`nodeById must take a string id as first parameter, not: ${id}`);
+
+    this.add(this.nodeHandler({
+      type: this.matchTypes.node,
+      args: { [identifier && identifier || "id"]: id },
+      variable
+    }))
+
+    return this;
+  }
+
   node(nodeParams) {
     this.validate(nodeParams).node();
 
-    return {
+    this.add(this.nodeHandler({
       type: this.matchTypes.node,
       ...nodeParams
-    }
+    }))
+
+    return this;
   }
 
   rel(relParams) {
     this.validate(relParams).rel();
 
-    return {
+    this.add(this.relHandler({
       type: this.matchTypes.rel,
       ...relParams
-    }
+    }))
+
+    return this;
   }
 
   link(linkParams) {
     this.validate(linkParams).link();
 
-    return {
+    this.add(this.linkHandler({
       type: this.matchTypes.link,
       ...linkParams
-    }
-  }
+    }));
 
-  count(countParams) {
-    return ` count(${countParams && countParams || ''}) `;
+    return this;
+  }
+}
+
+// add component functions, but put results in query and return this
+for (let key of Object.keys(conditions)) {
+  Core.prototype[key] = function(...params) {
+    this.add(conditions[key](...params));
+    return this;
   }
 }
 
@@ -133,5 +168,7 @@ export default [
   Match,
   Return,
   With,
-  Unwind
+  Unwind,
+  As,
+  Where
 ];

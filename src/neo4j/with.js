@@ -8,7 +8,7 @@ Cypher :
   WITH u, count(*) as UserCount
 
 Amigo4j :
-  .with([ "u", { var: amigo4j.count("*"), as: "UserCount" } ])
+  .with([ "u", { var: count("*"), as: "UserCount" } ])
 */
 
 
@@ -18,25 +18,27 @@ export default class With {
   constructor() {}
 
   with(params){
-    this.query = this.query + ' WITH ';
+    this.add('WITH')
 
-    if (Array.isArray(params)) {
-      // multiple item matches
-      this.query = this.query + params.map(i => {
-        if (typeof i === "string") {
-          return i;
-        } else if (isObject(i)) {
-          return this.withObjectHandler(i);
-        } else {
-          throw `with() method must take array of strings or objects, not ${typeof i}`;
-        }
-      }).join(", ");
-    } else if (typeof params === "string") {
-      this.query = this.query + `${params}`;
-    } else if (isObject(params)) {
-      this.query = this.query + this.withObjectHandler(params);
-    } else {
-      throw `with() method must take array or string, not ${typeof params}`;
+    if (params) {
+      if (Array.isArray(params)) {
+        // multiple item matches
+        this.add(params.map(i => {
+          if (typeof i === "string") {
+            return i;
+          } else if (isObject(i)) {
+            return this.withObjectHandler(i);
+          } else {
+            throw `with() method must take array of strings or objects, not ${typeof i}`;
+          }
+        }).join(", "));
+      } else if (typeof params === "string") {
+        this.add(params);
+      } else if (isObject(params)) {
+        this.add(this.withObjectHandler(params));
+      } else {
+        throw `with() method must take array or string, not ${typeof params}`;
+      }
     }
 
     return this;

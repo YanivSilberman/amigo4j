@@ -61,6 +61,8 @@ export default class Match {
       // single match item
       this.query = this.query + this.matchAdder(params);
       return this;
+    } else if (!params) {
+      return this;
     } else {
       throw `match() method must take object or array, not ${typeof params}`
     }
