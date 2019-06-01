@@ -46,8 +46,8 @@ export default ({ schema, schemaToMethods }) => {
   // create custom methods for schema
   if (schemaToMethods) {
     for (let key of Object.keys(schema)) {
-      Amigo4j.prototype[key] = function(...params) {
-        this.node({ label: key, ...params });
+      Amigo4j.prototype[key] = function(variable, args) {
+        this.node({ label: key, variable, args });
         return this;
       }
 

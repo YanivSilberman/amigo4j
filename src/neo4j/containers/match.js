@@ -52,15 +52,15 @@ export default class Match {
   }
 
   match(params) {
-    this.query = this.query + 'MATCH ';
+    this.add('MATCH');
 
     if (Array.isArray(params)) {
       // multiple item matches
-      this.query = this.query + params.map(param => this.matchAdder(param)).join(", ");
+      this.add(params.map(param => this.matchAdder(param)).join(", "));
       return this;
     } else if (isObject(params)) {
       // single match item
-      this.query = this.query + this.matchAdder(params);
+      this.add(this.matchAdder(params));
       return this;
     } else if (!params) {
       return this;
@@ -103,7 +103,7 @@ export default class Match {
 
     const convert = i => {
       this.matchValidate(i);
-      return this.matchItemHandler(i)
+      return this.itemHandler(i)
     }
 
     if (Array.isArray(item)) {
@@ -117,26 +117,6 @@ export default class Match {
     }
 
     return add;
-  }
-
-  /**
-  * Takes item converts to cypher
-  * @param item : { node/rel/link }
-  * @returns Cypher string
-  */
-
-  matchItemHandler(i) {
-    const { type, variable, label, args, direction } = i;
-
-    if (type === this.matchTypes.rel) {
-      return this.relHandler({ variable, label, args });
-    } else if (type === this.matchTypes.node) {
-      return this.nodeHandler({ variable, label, args });
-    } else if (type === this.matchTypes.link) {
-      return this.linkHandler({ direction });
-    } else {
-      throw('Wrong match type, use matchTypes.rel or matchTypes.node')
-    }
   }
 
 }

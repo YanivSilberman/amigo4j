@@ -15,22 +15,20 @@ export default class Return {
   constructor() {}
 
   return(params) {
-    this.query = this.query + ' RETURN ';
+    this.add('RETURN');
 
     if (Array.isArray(params)) {
       if (params.some(i => typeof i !== "string"))
         throw("Return array param must be strings only")
 
       // multiple item matches
-      const ret = this.query + params.join(", ");
-      this.query = '';
-      return ret;
+      this.add(params.join(", "));
+      return this;
 
     } else if (typeof params === "string") {
       // single match item
-      const ret = this.query + params;
-      this.query = '';
-      return ret;
+      this.add(params);
+      return this;
 
     } else {
       throw `return() method must take string or array, not ${typeof params}`

@@ -1,6 +1,6 @@
 import importModules from 'import-modules';
 import * as conditions from './components/conditions';
-import { isObject, linkDirection, matchTypes } from '../lib';
+import { isObject, linkDirection, matchTypes, dataTypes } from '../lib';
 
 const Containers = Object
   .keys(importModules(`./containers`))
@@ -18,6 +18,7 @@ class Core {
   constructor() {
     this.linkDirection = linkDirection;
     this.matchTypes = matchTypes;
+    this.dataTypes = dataTypes;
   }
 
   // general concat function
@@ -62,6 +63,26 @@ class Core {
     }
 
     return { node, rel, link, nodeOrRel };
+  }
+
+  /**
+  * Takes item converts to cypher
+  * @param item : { node/rel/link }
+  * @returns Cypher string
+  */
+
+  itemHandler(i) {
+    const { type, variable, label, args, direction } = i;
+
+    if (type === this.matchTypes.rel) {
+      return this.relHandler({ variable, label, args });
+    } else if (type === this.matchTypes.node) {
+      return this.nodeHandler({ variable, label, args });
+    } else if (type === this.matchTypes.link) {
+      return this.linkHandler({ direction });
+    } else {
+      throw('Wrong match type, use matchTypes.rel or matchTypes.node')
+    }
   }
 
   nodeHandler({ variable, label, args }) {

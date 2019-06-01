@@ -18,14 +18,11 @@ Amigo4j :
 */
 
 
-import { isObject } from '../../lib';
-
 export default class OrderBy {
   constructor() {}
 
-  /*
-  orderBy(params){
-    this.add('WITH')
+  orderBy(params, desc=false){
+    this.add('ORDER BY');
 
     if (params) {
       if (Array.isArray(params)) {
@@ -33,33 +30,21 @@ export default class OrderBy {
         this.add(params.map(i => {
           if (typeof i === "string") {
             return i;
-          } else if (isObject(i)) {
-            return this.withObjectHandler(i);
           } else {
-            throw `with() method must take array of strings or objects, not ${typeof i}`;
+            throw `orderBy() method must take array of strings, not ${typeof i}`;
           }
         }).join(", "));
       } else if (typeof params === "string") {
         this.add(params);
-      } else if (isObject(params)) {
-        this.add(this.withObjectHandler(params));
+        if (desc) {
+          this.add('DESC');
+        }
       } else {
-        throw `with() method must take array or string, not ${typeof params}`;
+        throw `orderBy() method must take array or string, not ${typeof params}`;
       }
     }
 
     return this;
   }
 
-  orderByValidate(item) {
-    // if item isn't object,
-    if (!isObject(item)) throw(`With item is not an object: ${item}`)
-    // if item variable isn't right
-    if (!item.variable || typeof item.variable !== "string")
-      throw(`Item variable is non existent or improper: ${item.variable}`);
-    // if item.as exists but is wrong
-    if (item.as && typeof item.as !== "string")
-      throw(`Item as is non existent or improper: ${item.as}`);
-  }
-  */
 }

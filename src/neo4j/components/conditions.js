@@ -37,5 +37,17 @@ export const and = placeBefore('AND');
 export const xor = placeBefore('XOR');
 export const comma = placeBefore(',');
 
+export const detach = placeBefore('DETACH');
+export const pipe = placeBefore('|');
+export const onMatch = placeBefore('ON MATCH');
+export const onCreate = placeBefore('ON CREATE');
+export const optional = placeBefore('OPTIONAL');
+
+export const union = placeBefore('UNION');
+export const unionAll = placeBefore('UNION ALL');
+export const fieldTerminator = placeBefore('FIELDTERMINATOR');
+
 // eg. isNull('n.name') ---> n.name IS NULL
 export const isNull = placeAfter('IS NULL');
+export const desc = placeAfter('DESC');
+export const unique = placeAfter('UNIQUE');

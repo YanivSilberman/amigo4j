@@ -39,18 +39,40 @@ RETURN o
 */
 
 
-const t = amigo4j
+const { query } = amigo4j
   .run()
+  .loadCsv('https://...', true, 500)
+    .as('line')
+  ._call("db.propertyKeys()")
+    .yield("propertyKey")
+      .as('prop')
+  .merge()
+    .node({ variable: "x" })
+    .rel({ right: true })
+    .onMatch()
+      .set('x.age = 3')
+    .onCreate()
+      .set('x.age = 0')
   .match()
     .User("o", { id: "123" })
-    .inTeam({ left: true })
-    .node({ variable: "o", label: amigo4j.labels.User, args: { id: "678" } })
-      .comma()
-        .nodeById("456", null, "i")
+      .inTeam({ left: true })
+      .node({ variable: "o", label: amigo4j.labels.User, args: { id: "678" } })
+    .comma()
+      .nodeById("456", null, "i")
   .whereNotExists("n.name")
     .or(startsWith("u.name", "y"))
   .with({ variable: count(), as: "Count" })
+  .set('u', 'name', '+=', 15)
+  .remove('u:User')
+  .create()
+    .User(null, { name: "Olga" })
   .unwind([], 'List')
-  .return("o")
+  .orderBy('u.name', true)
+  .foreach({ variable: 'n', list: 'nodes(p)', action: 'SET n.marked = TRUE' })
+  .skip(15)
+  .return(['u', 'o'])
+  .limit(1)
+  .delete('n', true)
 
-console.log(t);
+
+console.log(query);
